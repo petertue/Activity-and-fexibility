@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+*.autosave
+*.properties
+
 # Log file
 *.log
 

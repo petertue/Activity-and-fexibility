@@ -4,7 +4,7 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171527" AlpVersion="8.7.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171712" AlpVersion="8.7.3">
 <Model>
 	<Id>1641807876061</Id>
 	<Name><![CDATA[Albatross flexibility]]></Name>
@@ -2345,42 +2345,6 @@ endMoment[3] = endMoment[0] + endMoment[1] * 60 + endMoment[2] * 24 * 60;
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="220" Height="100">
 						<FillColor/>
-					</Properties>
-				</StatechartElement>
-				<StatechartElement Class="State" ParentState="moving" ParentStateId="1642413485094">
-					<Id>1642413522407</Id>
-					<Name><![CDATA[car]]></Name>
-					<X>620</X><Y>340</Y>
-					<Label><X>20</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="60" Height="40">
-						<FillColor>-1644806</FillColor>
-					</Properties>
-				</StatechartElement>
-				<StatechartElement Class="State" ParentState="moving" ParentStateId="1642413485094">
-					<Id>1642413541254</Id>
-					<Name><![CDATA[pt]]></Name>
-					<X>690</X><Y>340</Y>
-					<Label><X>20</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="60" Height="40">
-						<FillColor>-1644806</FillColor>
-					</Properties>
-				</StatechartElement>
-				<StatechartElement Class="State" ParentState="moving" ParentStateId="1642413485094">
-					<Id>1642413556675</Id>
-					<Name><![CDATA[bike]]></Name>
-					<X>760</X><Y>340</Y>
-					<Label><X>15</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="60" Height="40">
-						<FillColor>-1644806</FillColor>
 					</Properties>
 				</StatechartElement>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">

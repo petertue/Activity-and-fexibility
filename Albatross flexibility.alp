@@ -115,6 +115,38 @@
 			<Id>1641807876067</Id>
 			<Name><![CDATA[Main]]></Name>
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
+			<Import><![CDATA[import com.querydsl.core.Tuple;]]></Import>
+			<StartupCode><![CDATA[for (int i = 0; i < nbOfHouseholds; i++ ){
+	Household h = add_households();
+	h.id = uniform_discr(1,8866);
+
+	List< Tuple > data = 
+		selectFrom( household_full ).
+			where( household_full.hhid.eq( h.id ) ). //for this employee type
+			orderBy( household_full.home.asc() ). //sorted by due date
+			list();
+			traceln(data);
+			
+	for( Tuple tup : data ) {
+		h.postalCode = tup.get( household_full.home );
+		h.nbAdults = tup.get( household_full.comp );
+		h.nbChildren = tup.get( household_full.child );
+		h.nbVehicles = tup.get( household_full.ncar );
+		h.age1 = tup.get( household_full.age1 );
+		h.age2 = tup.get( household_full.age2 );
+		h.driver1 = tup.get( household_full.driver1 );
+		h.driver2 = tup.get( household_full.driver2 );
+		h.gender1 = tup.get( household_full.gender1 );
+		h.gender2 = tup.get( household_full.gender2 );
+		h.work1 = tup.get( household_full.work1 );
+		h.work2 = tup.get( household_full.work2 );
+		h.education1 = tup.get( household_full.education1 );
+		h.education2 = tup.get( household_full.education2 );
+	}
+
+}
+
+]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1641807876065</Id>
@@ -207,6 +239,29 @@
 			</ScaleRuler>
 			<CurrentLevel>1641807876066</CurrentLevel>
 			<ConnectionsId>1641807876062</ConnectionsId>
+			<Variables>
+				<Variable Class="Parameter">
+					<Id>1642680737997</Id>
+					<Name><![CDATA[nbOfHouseholds]]></Name>
+					<X>60</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1642680737995</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+			</Variables>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1641807876062</Id>
@@ -333,7 +388,7 @@
 					<LocationNameCode Class="CodeValue">
 						<Code><![CDATA[""]]></Code>
 					</LocationNameCode>
-					<InitializationType>LOAD_FROM_DATABASE</InitializationType>
+					<InitializationType>EMPTY</InitializationType>
 					<InitializationDatabaseTableQuery>
 						<TableReference>
 							<PackageName><![CDATA[albatross_flexibility]]></PackageName>
@@ -499,7 +554,7 @@
 					<LocationNameCode Class="CodeValue">
 						<Code><![CDATA[""]]></Code>
 					</LocationNameCode>
-					<InitializationType>LOAD_FROM_DATABASE</InitializationType>
+					<InitializationType>EMPTY</InitializationType>
 					<InitializationDatabaseTableQuery>
 						<TableReference>
 							<PackageName><![CDATA[albatross_flexibility]]></PackageName>
@@ -691,6 +746,27 @@
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1642694055705</Id>
+					<Name><![CDATA[addHousehold]]></Name>
+					<X>220</X><Y>130</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="100" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[add_households();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[button]]></LabelText>
+					</ExtendedProperties>
+				</Control>
 			</Presentation>
 
 				</Level>
@@ -722,9 +798,14 @@
 			<Name><![CDATA[Household]]></Name>
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
 			<StartupCode><![CDATA[adult1 = add_adults();
+adult1.memberID = 0;
 if ( nbAdults == 2 ) {
 	adult2 = add_adults();
-}]]></StartupCode>
+	adult2.memberID = 1;
+}
+
+
+]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1641808295079</Id>
@@ -929,7 +1010,7 @@ if ( nbAdults == 2 ) {
 					<X>-450</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
+					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[int]]></Type>
@@ -1254,7 +1335,7 @@ if ( nbAdults == 2 ) {
 							</Value>
 						</Parameter>
 						<Parameter>
-							<Name><![CDATA[adultIndex]]></Name>
+							<Name><![CDATA[memberID]]></Name>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[livingLocation]]></Name>
@@ -1403,19 +1484,19 @@ if ( nbAdults == 2 ) {
 leaveMoment[0] = Integer.valueOf( s[0] );
 leaveMoment[1] = Integer.valueOf( s[1] );
 leaveMoment[2] = Integer.valueOf( s[2] );
-leaveMoment[3] = leaveMoment[0] + leaveMoment[1] * 60 + leaveMoment[2] * 24 * 60;
+leaveMoment[3] = leaveMoment[1] + leaveMoment[0] * 60 + leaveMoment[2] * 24 * 60;
 
 String[] p = beginTime.split( ":|\\+" );
 arrivalMoment[0] = Integer.valueOf( p[0] );
 arrivalMoment[1] = Integer.valueOf( p[1] );
 arrivalMoment[2] = Integer.valueOf( p[2] );
-arrivalMoment[3] = arrivalMoment[0] + arrivalMoment[1] * 60 + arrivalMoment[2] * 24 * 60;
+arrivalMoment[3] = arrivalMoment[1] + arrivalMoment[0] * 60 + arrivalMoment[2] * 24 * 60;
 
 String[] x = endTime.split( ":|\\+" );
 endMoment[0] = Integer.valueOf( x[0] );
 endMoment[1] = Integer.valueOf( x[1] );
 endMoment[2] = Integer.valueOf( x[2] );
-endMoment[3] = endMoment[0] + endMoment[1] * 60 + endMoment[2] * 24 * 60;
+endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
 ]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
@@ -2015,6 +2096,26 @@ endMoment[3] = endMoment[0] + endMoment[1] * 60 + endMoment[2] * 24 * 60;
 			<Id>1641809719139</Id>
 			<Name><![CDATA[Adult]]></Name>
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
+			<StartupCode><![CDATA[/*
+List< Tuple > act = 
+	selectFrom( trips ).
+		where( trips.hhid( household ) ). //for this employee type
+		orderBy( trips.episode_id.asc() ). //sorted by due date
+		list();
+		traceln(act);
+			
+for( Tuple tup : act ) {
+	Activity a = add_activities;
+	a.type = tup.get( trips.activity_type );
+	a.locStart = tup.get( trips.orig_loc );
+	a.locEnd = tup.get( trips.dest_loc);
+	a.leaveTime = tup.get( trips.dest_loc);
+		
+		
+	}
+
+*/
+]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1641809719137</Id>
@@ -2239,7 +2340,7 @@ endMoment[3] = endMoment[0] + endMoment[1] * 60 + endMoment[2] * 24 * 60;
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1641810080383</Id>
-					<Name><![CDATA[adultIndex]]></Name>
+					<Name><![CDATA[memberID]]></Name>
 					<X>200</X><Y>150</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -2715,6 +2816,23 @@ endMoment[3] = endMoment[0] + endMoment[1] * 60 + endMoment[2] * 24 * 60;
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
 			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1642680672626</Id>
+					<Name><![CDATA[nbOfHouseholds]]></Name>
+					<X>90</X><Y>120</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[10]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+			</Variables>
 
 			<Presentation>
 				<Text>
@@ -2738,9 +2856,39 @@ endMoment[3] = endMoment[0] + endMoment[1] * 60 + endMoment[2] * 24 * 60;
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Control Type="Slider">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1642680618114</Id>
+					<Name><![CDATA[sliderHouseholds]]></Name>
+					<X>80</X><Y>80</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="100" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<DefaultValueCode><![CDATA[0]]></DefaultValueCode>
+						<Orientation>HORIZONTAL</Orientation>
+						<MinValue><![CDATA[0]]></MinValue>
+						<MaxValue><![CDATA[100]]></MaxValue>
+						<Step><![CDATA[1]]></Step>
+						<LinkTo>true</LinkTo>
+						<Link>nbOfHouseholds</Link>
+					</ExtendedProperties>
+				</Control>
 			</Presentation>
 
 			<Parameters>			
+				<Parameter>
+					<ParameterName><![CDATA[nbOfHouseholds]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[nbOfHouseholds]]></Code>
+					</ParameterValue>
+				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
 				<EnableZoomAndPanning>true</EnableZoomAndPanning>

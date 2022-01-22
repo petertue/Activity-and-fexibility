@@ -798,10 +798,10 @@
 			<Name><![CDATA[Household]]></Name>
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
 			<StartupCode><![CDATA[adult1 = add_adults();
-//adult1.memberID = 0;
+adult1.memberID = 0;
 if ( nbAdults == 2 ) {
 	adult2 = add_adults();
-	//adult2.memberID = 1;
+	adult2.memberID = 1;
 }
 
 
@@ -2097,28 +2097,25 @@ endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
 			<Name><![CDATA[Adult]]></Name>
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
 			<StartupCode><![CDATA[/*
-for (int i = 0; i < 10; i++ ){
-	Activity a = add_activities();
-
-	List< Tuple > act = 
-		selectFrom( trips ).
-			where( trips.HHID( household ) &&  ). //for this employee type
-			orderBy( trips.episode_id.asc() ). //sorted by due date
-			list();
-			traceln(act);
+List< Tuple > act = 
+	selectFrom( trips ).
+		where( trips.hhid( household ) ). //for this employee type
+		orderBy( trips.episode_id.asc() ). //sorted by due date
+		list();
+		traceln(act);
 			
-	for( Tuple tup : data ) {
-		Activity a = add_activities
-		a.type = tup.get( trips.activity_type );
-		a.locStart = tup.get( trips.orig_loc );
-		a.locEnd = tup.get( trips.dest_loc);
-		a.leaveTime = tup.get( trips.dest_loc);
+for( Tuple tup : act ) {
+	Activity a = add_activities;
+	a.type = tup.get( trips.activity_type );
+	a.locStart = tup.get( trips.orig_loc );
+	a.locEnd = tup.get( trips.dest_loc);
+	a.leaveTime = tup.get( trips.dest_loc);
 		
 		
 	}
 
-}
-*/]]></StartupCode>
+*/
+]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1641809719137</Id>

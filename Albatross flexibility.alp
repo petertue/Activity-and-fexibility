@@ -4,7 +4,7 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171712" AlpVersion="8.7.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171527" AlpVersion="8.7.3">
 <Model>
 	<Id>1641807876061</Id>
 	<Name><![CDATA[Albatross flexibility]]></Name>
@@ -119,31 +119,7 @@
 			<StartupCode><![CDATA[for (int i = 0; i < nbOfHouseholds; i++ ){
 	Household h = add_households();
 	h.id = uniform_discr(1,8866);
-
-	List< Tuple > data = 
-		selectFrom( household_full ).
-			where( household_full.hhid.eq( h.id ) ). //for this employee type
-			orderBy( household_full.home.asc() ). //sorted by due date
-			list();
-			traceln(data);
-			
-	for( Tuple tup : data ) {
-		h.postalCode = tup.get( household_full.home );
-		h.nbAdults = tup.get( household_full.comp );
-		h.nbChildren = tup.get( household_full.child );
-		h.nbVehicles = tup.get( household_full.ncar );
-		h.age1 = tup.get( household_full.age1 );
-		h.age2 = tup.get( household_full.age2 );
-		h.driver1 = tup.get( household_full.driver1 );
-		h.driver2 = tup.get( household_full.driver2 );
-		h.gender1 = tup.get( household_full.gender1 );
-		h.gender2 = tup.get( household_full.gender2 );
-		h.work1 = tup.get( household_full.work1 );
-		h.work2 = tup.get( household_full.work2 );
-		h.education1 = tup.get( household_full.education1 );
-		h.education2 = tup.get( household_full.education2 );
-	}
-
+	generateActivies(h, h.id);
 }
 
 ]]></StartupCode>
@@ -262,6 +238,46 @@
 					</Properties>                 
 				</Variable>
 			</Variables>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[Activity[]]]></ReturnType>
+					<Id>1642890694772</Id>
+					<Name><![CDATA[generateActivities]]></Name>
+					<X>60</X><Y>240</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[h]]></Name>
+						<Type><![CDATA[Household]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[id]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[List< Tuple > activities = 
+	selectFrom( household_full ).where( household_full.hhid.eq( id ) ).list();
+			
+for( Tuple tup : activities ) {
+	h.postalCode = tup.get( household_full.home );
+	h.nbAdults = tup.get( household_full.comp );
+	h.nbChildren = tup.get( household_full.child );
+	h.nbVehicles = tup.get( household_full.ncar );
+	h.age1 = tup.get( household_full.age1 );
+	h.age2 = tup.get( household_full.age2 );
+	h.driver1 = tup.get( household_full.driver1 );
+	h.driver2 = tup.get( household_full.driver2 );
+	h.gender1 = tup.get( household_full.gender1 );
+	h.gender2 = tup.get( household_full.gender2 );
+	h.work1 = tup.get( household_full.work1 );
+	h.work2 = tup.get( household_full.work2 );
+	h.education1 = tup.get( household_full.education1 );
+	h.education2 = tup.get( household_full.education2 );
+}]]></Body>
+				</Function>
+			</Functions>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1641807876062</Id>

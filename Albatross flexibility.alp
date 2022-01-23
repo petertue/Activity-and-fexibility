@@ -4,7 +4,7 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171712" AlpVersion="8.7.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171527" AlpVersion="8.7.3">
 <Model>
 	<Id>1641807876061</Id>
 	<Name><![CDATA[Albatross flexibility]]></Name>
@@ -118,32 +118,13 @@
 			<Import><![CDATA[import com.querydsl.core.Tuple;]]></Import>
 			<StartupCode><![CDATA[for (int i = 0; i < nbOfHouseholds; i++ ){
 	Household h = add_households();
-	h.id = uniform_discr(1,8866);
-
-	List< Tuple > data = 
-		selectFrom( household_full ).
-			where( household_full.hhid.eq( h.id ) ). //for this employee type
-			orderBy( household_full.home.asc() ). //sorted by due date
-			list();
-			traceln(data);
-			
-	for( Tuple tup : data ) {
-		h.postalCode = tup.get( household_full.home );
-		h.nbAdults = tup.get( household_full.comp );
-		h.nbChildren = tup.get( household_full.child );
-		h.nbVehicles = tup.get( household_full.ncar );
-		h.age1 = tup.get( household_full.age1 );
-		h.age2 = tup.get( household_full.age2 );
-		h.driver1 = tup.get( household_full.driver1 );
-		h.driver2 = tup.get( household_full.driver2 );
-		h.gender1 = tup.get( household_full.gender1 );
-		h.gender2 = tup.get( household_full.gender2 );
-		h.work1 = tup.get( household_full.work1 );
-		h.work2 = tup.get( household_full.work2 );
-		h.education1 = tup.get( household_full.education1 );
-		h.education2 = tup.get( household_full.education2 );
+	h.id = uniform_discr(1,8866); //dit leidt tot dubbelingen!!!
+	initializeHousehold(h, h.id);
+	generateTrips(h, h.id);
+	for( Adult a : h.adults) {
+		a.currentActivity = a.activities(0);
+		a.setNextActivity();
 	}
-
 }
 
 ]]></StartupCode>
@@ -243,10 +224,10 @@
 				<Variable Class="Parameter">
 					<Id>1642680737997</Id>
 					<Name><![CDATA[nbOfHouseholds]]></Name>
-					<X>60</X><Y>160</Y>
+					<X>-140</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[double]]></Type>
@@ -262,6 +243,104 @@
 					</Properties>                 
 				</Variable>
 			</Variables>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[Activity[]]]></ReturnType>
+					<Id>1642890694772</Id>
+					<Name><![CDATA[initializeHousehold]]></Name>
+					<X>-140</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[h]]></Name>
+						<Type><![CDATA[Household]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[id]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[List< Tuple > t = 
+	selectFrom( household_full ).where( household_full.hhid.eq( id ) ).list();
+			
+for( Tuple tup : t ) {
+	h.postalCode = tup.get( household_full.home );
+	h.nbAdults = tup.get( household_full.comp );
+	// regel met comp toevoegen. Comp bepaalt namelijk ook rittenpatronen en ander huishoudgedrag
+	h.nbChildren = tup.get( household_full.child );
+	h.nbVehicles = tup.get( household_full.ncar );
+	h.age1 = tup.get( household_full.age1 );
+	h.age2 = tup.get( household_full.age2 );
+	h.driver1 = tup.get( household_full.driver1 );
+	h.driver2 = tup.get( household_full.driver2 );
+	h.gender1 = tup.get( household_full.gender1 );
+	h.gender2 = tup.get( household_full.gender2 );
+	h.work1 = tup.get( household_full.work1 );
+	h.work2 = tup.get( household_full.work2 );
+	h.education1 = tup.get( household_full.education1 );
+	h.education2 = tup.get( household_full.education2 );
+}
+
+h.adult1 = h.add_adults();
+h.adult1.memberID = 0;
+if ( h.nbAdults > 1 ) { //Dit aanpassen als comp is opgelost!
+	h.adult2 = h.add_adults();
+	h.adult2.memberID = 1;
+	h.g_adult2.setVisible(true);
+}]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[Activity[]]]></ReturnType>
+					<Id>1642931805141</Id>
+					<Name><![CDATA[generateTrips]]></Name>
+					<X>-140</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[h]]></Name>
+						<Type><![CDATA[Household]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[id]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[List< Tuple > activities = 
+	selectFrom( trips ).where( trips.hhid.eq( id ) ).list();
+			
+for( Tuple tup : activities ) {
+	Activity a;
+	if ( tup.get( trips.mem_id ) == 0 ){
+		a = h.adult1.add_activities();
+	}
+	else {
+		a = h.adult2.add_activities();
+	}
+	//Hier moeten we iets inbouwen dat mem_id geen andere waarde kan hebben dan 0 en 1.
+	
+	//get values from db
+	a.type = tup.get (trips.activity_type );
+	a.modality = tup.get (trips.mode );
+	a.locStart = tup.get (trips.orig_loc );
+	a.locEnd = tup.get (trips.dest_loc );
+	//a.distance = tup.get (trips.activity_type ); //is er nog niet
+	a.leaveTime = tup.get (trips.leave_time );
+	a.travelTime = tup.get (trips.travel_time );
+	a.beginTime = tup.get (trips.begin_time );
+	a.endTime = tup.get (trips.end_time );
+	a.episode = tup.get (trips.episode_id);
+	
+	//set other stuff
+	a.processDatabaseInput();
+	a.adult = h.adult1;
+	a.household = h;
+}]]></Body>
+				</Function>
+			</Functions>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1641807876062</Id>
@@ -362,6 +441,41 @@
 						<Code><![CDATA[100]]></Code>
 					</Replication>
 					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<StatisticsItem>
+						<Id>1642932021884</Id>
+						<Name><![CDATA[nbComp0]]></Name>
+						<Type>count</Type>
+						<Expression><![CDATA[]]></Expression>
+						<Condition><![CDATA[item.nbAdults == 0]]></Condition>
+					</StatisticsItem>
+					<StatisticsItem>
+						<Id>1642932051613</Id>
+						<Name><![CDATA[nbComp1]]></Name>
+						<Type>count</Type>
+						<Expression><![CDATA[]]></Expression>
+						<Condition><![CDATA[item.nbAdults == 1]]></Condition>
+					</StatisticsItem>
+					<StatisticsItem>
+						<Id>1642932058641</Id>
+						<Name><![CDATA[nbComp2]]></Name>
+						<Type>count</Type>
+						<Expression><![CDATA[]]></Expression>
+						<Condition><![CDATA[item.nbAdults == 2]]></Condition>
+					</StatisticsItem>
+					<StatisticsItem>
+						<Id>1642932059989</Id>
+						<Name><![CDATA[nbComp3]]></Name>
+						<Type>count</Type>
+						<Expression><![CDATA[]]></Expression>
+						<Condition><![CDATA[item.nbAdults == 3]]></Condition>
+					</StatisticsItem>
+					<StatisticsItem>
+						<Id>1642932146588</Id>
+						<Name><![CDATA[nbComp4]]></Name>
+						<Type>count</Type>
+						<Expression><![CDATA[]]></Expression>
+						<Condition><![CDATA[item.nbAdults == 4]]></Condition>
+					</StatisticsItem>
 					<InEnvironment>true</InEnvironment>	
 					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
 					<XCode Class="CodeValue">
@@ -449,244 +563,6 @@
 						</Item>	
 					</ParameterToDatabaseColumnMapping>
 				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1641824005110</Id>
-					<Name><![CDATA[activities]]></Name>
-					<X>60</X><Y>130</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<PresentationId>1641824005111</PresentationId>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-						<ClassName><![CDATA[Activity]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-							<ClassName><![CDATA[Activity]]></ClassName>
-							<ItemName><![CDATA[1641808826010]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[modality]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[type]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[leaveTime]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[travelTime]]></Name>
-							<Value Class="CodeUnitValue">
-								<Code><![CDATA[]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[locStart]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[locEnd]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[distance]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[leaveMoment]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[adult]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[beginTime]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[endTime]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[arrivalMoment]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[endMoment]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[activityDuration]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[owner]]></Name>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[household]]></Name>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>true</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InEnvironment>true</InEnvironment>	
-					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
-					<XCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</XCode>
-					<YCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</YCode>
-					<ZCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ZCode>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LatitudeCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</LatitudeCode>
-					<LongitudeCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</LongitudeCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>EMPTY</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-							<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-							<ClassName><![CDATA[trips]]></ClassName>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-					<ParameterToDatabaseColumnMapping>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[leaveTime]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[leave_time]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[beginTime]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[begin_time]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[modality]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[mode]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[type]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[activity_type]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[travelTime]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[travel_time]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[locStart]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[orig_loc]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[locEnd]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[dest_loc]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[adult]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[mem_id]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[household]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[hhid]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Activity]]></ClassName>
-								<ItemName><![CDATA[endTime]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[trips]]></ClassName>
-								<ItemName><![CDATA[end_time]]></ItemName>
-							</Value>
-						</Item>	
-					</ParameterToDatabaseColumnMapping>
-				</EmbeddedObject>
 			</EmbeddedObjects>
 
 			<Presentation>
@@ -750,45 +626,109 @@
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1642694055705</Id>
 					<Name><![CDATA[addHousehold]]></Name>
-					<X>220</X><Y>130</Y>
+					<X>180</X><Y>85</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="100" Height="30">
+					<BasicProperties Width="130" Height="30">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor/>
 						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[add_households();]]></ActionCode>
+						<ActionCode><![CDATA[Household h = add_households();
+h.id = uniform_discr(1,8866); //dit leidt tot dubbelingen!!!
+initializeHousehold(h, h.id);
+generateTrips(h, h.id);]]></ActionCode>
 					</BasicProperties>
 					<ExtendedProperties>
 						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText><![CDATA[button]]></LabelText>
+						<LabelText><![CDATA[add a household]]></LabelText>
 					</ExtendedProperties>
 				</Control>
+    			<PieChart>
+					<Id>1642931953199</Id>
+					<Name><![CDATA[nbAdults]]></Name>
+					<X>60</X><Y>160</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>true</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1643011200000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+					</RecurrenceCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>260</Width>
+					<Height>210</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<ChartArea>
+						<XOffset>60</XOffset>
+						<YOffset>10</YOffset>
+						<Width>140</Width>
+						<Height>140</Height>
+						<BorderColor/>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>40</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<DataItem>
+					<Id>0</Id>
+					<Expression><![CDATA[households.nbComp0()]]></Expression>
+					<Color>-2448096</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[0]]></Title>
+					</DataItem>
+					<DataItem>
+					<Id>0</Id>
+					<Expression><![CDATA[households.nbComp1()]]></Expression>
+					<Color>-9728477</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[1]]></Title>
+					</DataItem>
+					<DataItem>
+					<Id>0</Id>
+					<Expression><![CDATA[households.nbComp2()]]></Expression>
+					<Color>-16728065</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[2]]></Title>
+					</DataItem>
+					<DataItem>
+					<Id>0</Id>
+					<Expression><![CDATA[households.nbComp3()]]></Expression>
+					<Color>-4565549</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[3]]></Title>
+					</DataItem>
+					<DataItem>
+					<Id>0</Id>
+					<Expression><![CDATA[households.nbComp4()]]></Expression>
+					<Color>-2354116</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[4]]></Title>
+					</DataItem>
+    			</PieChart>
 			</Presentation>
 
 				</Level>
-				<EmbeddedObjectPresentation>
-					<Id>1641824005111</Id>
-					<Name><![CDATA[activities_presentation]]></Name>
-					<X>160</X><Y>130</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<DrawingMode>AGENT_CURRENT_POSITION</DrawingMode>
-					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
-					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
-					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
-					<Latitude>0.0</Latitude>
-					<Longitude>0.0</Longitude>
-				</EmbeddedObjectPresentation>
 			</Presentation>
 
 		</ActiveObjectClass>
@@ -797,14 +737,7 @@
 			<Id>1641808295081</Id>
 			<Name><![CDATA[Household]]></Name>
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
-			<StartupCode><![CDATA[adult1 = add_adults();
-adult1.memberID = 0;
-if ( nbAdults == 2 ) {
-	adult2 = add_adults();
-	adult2.memberID = 1;
-}
-
-
+			<StartupCode><![CDATA[
 ]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
@@ -1346,15 +1279,19 @@ if ( nbAdults == 2 ) {
 								<Code><![CDATA[this.id]]></Code>
 							</Value>
 						</Parameter>
-						<Parameter>
-							<Name><![CDATA[activities]]></Name>
-						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
 					<Replication Class="CodeValue">
 						<Code><![CDATA[100]]></Code>
 					</Replication>
 					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<StatisticsItem>
+						<Id>1642933575701</Id>
+						<Name><![CDATA[adultsHome]]></Name>
+						<Type>count</Type>
+						<Expression><![CDATA[]]></Expression>
+						<Condition><![CDATA[item.isHome]]></Condition>
+					</StatisticsItem>
 					<InEnvironment>true</InEnvironment>	
 					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
 					<XCode Class="CodeValue">
@@ -1450,6 +1387,148 @@ if ( nbAdults == 2 ) {
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Group>
+					<Id>1642933711013</Id>
+					<Name><![CDATA[g_adult1]]></Name>
+					<X>450</X><Y>35</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Polyline>
+					<Id>1642933636940</Id>
+					<Name><![CDATA[polyline]]></Name>
+					<X>0</X><Y>-10</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<FillColor>-1</FillColor>
+					<FillColorCode><![CDATA[adult1.isHome ? lightGreen : white]]></FillColorCode>
+					<FillMaterial>null</FillMaterial>
+					<Points>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>10</X><Y>20</Y><Z>0</Z></Point>
+					   <Point><X>-10</X><Y>20</Y><Z>0</Z></Point>
+					   <Point><X>-1</X><Y>2</Y><Z>0</Z></Point>
+					</Points>
+					<Closed>false</Closed>
+				</Polyline>
+				<Oval>
+					<Id>1642933619754</Id>
+					<Name><![CDATA[oval]]></Name>
+					<X>0</X><Y>-10</Y>
+					<Label><X>0</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<RadiusX>7.5</RadiusX>
+					<RadiusY>40</RadiusY>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillColorCode><![CDATA[adult1.isHome ? lightGreen : white]]></FillColorCode>
+					<FillMaterial>null</FillMaterial>
+				</Oval>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1642933739856</Id>
+					<Name><![CDATA[g_adult2]]></Name>
+					<X>480</X><Y>35</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Polyline>
+					<Id>1642933739858</Id>
+					<Name><![CDATA[polyline1]]></Name>
+					<X>0</X><Y>-10</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<FillColor>-1</FillColor>
+					<FillColorCode><![CDATA[adult2.isHome ? lightGreen : white]]></FillColorCode>
+					<FillMaterial>null</FillMaterial>
+					<Points>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>10</X><Y>20</Y><Z>0</Z></Point>
+					   <Point><X>-10</X><Y>20</Y><Z>0</Z></Point>
+					   <Point><X>-1</X><Y>2</Y><Z>0</Z></Point>
+					</Points>
+					<Closed>false</Closed>
+				</Polyline>
+				<Oval>
+					<Id>1642933739860</Id>
+					<Name><![CDATA[oval1]]></Name>
+					<X>0</X><Y>-10</Y>
+					<Label><X>0</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<RadiusX>7.5</RadiusX>
+					<RadiusY>40</RadiusY>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillColorCode><![CDATA[adult2.isHome ? lightGreen : white]]></FillColorCode>
+					<FillMaterial>null</FillMaterial>
+				</Oval>
+			</Presentation>
+
+				</Group>
 			</Presentation>
 
 				</Level>
@@ -1480,24 +1559,6 @@ if ( nbAdults == 2 ) {
 			<Id>1641808826012</Id>
 			<Name><![CDATA[Activity]]></Name>
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
-			<StartupCode><![CDATA[String[] s = leaveTime.split( ":|\\+" );
-leaveMoment[0] = Integer.valueOf( s[0] );
-leaveMoment[1] = Integer.valueOf( s[1] );
-leaveMoment[2] = Integer.valueOf( s[2] );
-leaveMoment[3] = leaveMoment[1] + leaveMoment[0] * 60 + leaveMoment[2] * 24 * 60;
-
-String[] p = beginTime.split( ":|\\+" );
-arrivalMoment[0] = Integer.valueOf( p[0] );
-arrivalMoment[1] = Integer.valueOf( p[1] );
-arrivalMoment[2] = Integer.valueOf( p[2] );
-arrivalMoment[3] = arrivalMoment[1] + arrivalMoment[0] * 60 + arrivalMoment[2] * 24 * 60;
-
-String[] x = endTime.split( ":|\\+" );
-endMoment[0] = Integer.valueOf( x[0] );
-endMoment[1] = Integer.valueOf( x[1] );
-endMoment[2] = Integer.valueOf( x[2] );
-endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
-]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1641808826010</Id>
@@ -1771,13 +1832,13 @@ endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
 				<Variable Class="Parameter">
 					<Id>1641823099875</Id>
 					<Name><![CDATA[adult]]></Name>
-					<X>80</X><Y>390</Y>
+					<X>80</X><Y>420</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[int]]></Type>
+						<Type><![CDATA[Adult]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<ParameterEditor>
@@ -1929,13 +1990,13 @@ endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
 				<Variable Class="Parameter">
 					<Id>1641826201853</Id>
 					<Name><![CDATA[household]]></Name>
-					<X>80</X><Y>420</Y>
+					<X>80</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[int]]></Type>
+						<Type><![CDATA[Household]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<ParameterEditor>
@@ -1947,7 +2008,81 @@ endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="Parameter">
+					<Id>1642936124617</Id>
+					<Name><![CDATA[episode]]></Name>
+					<X>80</X><Y>390</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1642936124615</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1642939496558</Id>
+					<Name><![CDATA[startMinute]]></Name>
+					<X>270</X><Y>270</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1642939496556</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 			</Variables>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1642935303895</Id>
+					<Name><![CDATA[processDatabaseInput]]></Name>
+					<X>80</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[String[] s = leaveTime.split( ":|\\+" );
+leaveMoment[0] = Integer.valueOf( s[0] );
+leaveMoment[1] = Integer.valueOf( s[1] );
+leaveMoment[2] = Integer.valueOf( s[2] );
+leaveMoment[3] = leaveMoment[1] + leaveMoment[0] * 60 + leaveMoment[2] * 24 * 60;
+
+String[] p = beginTime.split( ":|\\+" );
+arrivalMoment[0] = Integer.valueOf( p[0] );
+arrivalMoment[1] = Integer.valueOf( p[1] );
+arrivalMoment[2] = Integer.valueOf( p[2] );
+arrivalMoment[3] = arrivalMoment[1] + arrivalMoment[0] * 60 + arrivalMoment[2] * 24 * 60;
+
+String[] x = endTime.split( ":|\\+" );
+endMoment[0] = Integer.valueOf( x[0] );
+endMoment[1] = Integer.valueOf( x[1] );
+endMoment[2] = Integer.valueOf( x[2] );
+endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
+
+startMinute = leaveMoment[3];]]></Body>
+				</Function>
+			</Functions>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1641808826007</Id>
@@ -1972,9 +2107,37 @@ endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
 
 			<ContainerLinks>
 				<ContainerLink>
-					<Id>1641824005137</Id>
-					<Name><![CDATA[main]]></Name>
+					<Id>1642933441122</Id>
+					<Name><![CDATA[adult]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
 					<X>50</X><Y>-100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[albatross_flexibility]]></PackageName>
+						<ClassName><![CDATA[Adult]]></ClassName>
+					</ActiveObjectClass>
+				</ContainerLink>
+				<ContainerLink>
+					<Id>1642933441123</Id>
+					<Name><![CDATA[household]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
+					<X>150</X><Y>-100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[albatross_flexibility]]></PackageName>
+						<ClassName><![CDATA[Household]]></ClassName>
+					</ActiveObjectClass>
+				</ContainerLink>
+				<ContainerLink>
+					<Id>1642933441124</Id>
+					<Name><![CDATA[main]]></Name>
+					<X>250</X><Y>-100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2096,26 +2259,6 @@ endMoment[3] = endMoment[1] + endMoment[0] * 60 + endMoment[2] * 24 * 60;
 			<Id>1641809719139</Id>
 			<Name><![CDATA[Adult]]></Name>
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
-			<StartupCode><![CDATA[/*
-List< Tuple > act = 
-	selectFrom( trips ).
-		where( trips.hhid( household ) ). //for this employee type
-		orderBy( trips.episode_id.asc() ). //sorted by due date
-		list();
-		traceln(act);
-			
-for( Tuple tup : act ) {
-	Activity a = add_activities;
-	a.type = tup.get( trips.activity_type );
-	a.locStart = tup.get( trips.orig_loc );
-	a.locEnd = tup.get( trips.dest_loc);
-	a.leaveTime = tup.get( trips.dest_loc);
-		
-		
-	}
-
-*/
-]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1641809719137</Id>
@@ -2212,7 +2355,7 @@ for( Tuple tup : act ) {
 				<Variable Class="PlainVariable">
 					<Id>1641811075837</Id>
 					<Name><![CDATA[currentLocation]]></Name>
-					<X>50</X><Y>300</Y>
+					<X>50</X><Y>470</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2224,13 +2367,55 @@ for( Tuple tup : act ) {
 				<Variable Class="PlainVariable">
 					<Id>1641811149883</Id>
 					<Name><![CDATA[currentActivity]]></Name>
-					<X>50</X><Y>330</Y>
+					<X>50</X><Y>340</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[ActivityType]]></Type>        
+						<Type><![CDATA[Activity]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1642933536678</Id>
+					<Name><![CDATA[isHome]]></Name>
+					<X>50</X><Y>500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[true]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1642936196890</Id>
+					<Name><![CDATA[currentActivityEpisode]]></Name>
+					<X>50</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1642936835472</Id>
+					<Name><![CDATA[nextActivity]]></Name>
+					<X>50</X><Y>370</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[Activity]]></Type>        
 					</Properties>
 				</Variable>
 				<Variable Class="Parameter">
@@ -2381,27 +2566,6 @@ for( Tuple tup : act ) {
 					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
-					<Id>1641915039614</Id>
-					<Name><![CDATA[activities]]></Name>
-					<X>200</X><Y>180</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[Activity[]]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<ParameterEditor>
-							<Id>1641915039612</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
 					<Id>1641918965127</Id>
 					<Name><![CDATA[householdID]]></Name>
 					<X>200</X><Y>120</Y>
@@ -2427,7 +2591,7 @@ for( Tuple tup : act ) {
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1642413457596</Id>
 					<Name><![CDATA[atHome]]></Name>
-					<X>670</X><Y>230</Y>
+					<X>1060</X><Y>160</Y>
 					<Label><X>25</X><Y>15</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2439,31 +2603,31 @@ for( Tuple tup : act ) {
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1642413485094</Id>
 					<Name><![CDATA[moving]]></Name>
-					<X>610</X><Y>310</Y>
+					<X>1000</X><Y>240</Y>
 					<Label><X>85</X><Y>15</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="220" Height="100">
-						<FillColor/>
+						<FillColor>-1</FillColor>
 					</Properties>
 				</StatechartElement>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1642413629268</Id>
 					<Name><![CDATA[activity]]></Name>
-					<X>670</X><Y>470</Y>
-					<Label><X>25</X><Y>15</Y></Label>
+					<X>880</X><Y>400</Y>
+					<Label><X>205</X><Y>15</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties Width="100" Height="30">
-						<FillColor/>
+					<Properties Width="470" Height="170">
+						<FillColor>-1644806</FillColor>
 					</Properties>
 				</StatechartElement>
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1642413455550</Id>
 					<Name><![CDATA[activityChart]]></Name>
-					<X>720</X><Y>190</Y>
+					<X>1110</X><Y>120</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2478,7 +2642,7 @@ for( Tuple tup : act ) {
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1642413587696</Id>
 					<Name><![CDATA[transition]]></Name>
-					<X>700</X><Y>260</Y>
+					<X>1090</X><Y>190</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2489,6 +2653,7 @@ for( Tuple tup : act ) {
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1642413457596" Target="1642413485094" Trigger="message">
+						<Action><![CDATA[isHome = false]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
@@ -2508,7 +2673,7 @@ for( Tuple tup : act ) {
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1642413617538</Id>
 					<Name><![CDATA[transition1]]></Name>
-					<X>700</X><Y>410</Y>
+					<X>1090</X><Y>340</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2538,7 +2703,7 @@ for( Tuple tup : act ) {
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1642413650101</Id>
 					<Name><![CDATA[transition2]]></Name>
-					<X>740</X><Y>470</Y>
+					<X>1130</X><Y>400</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2568,7 +2733,7 @@ for( Tuple tup : act ) {
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1642413684385</Id>
 					<Name><![CDATA[transition3]]></Name>
-					<X>740</X><Y>310</Y>
+					<X>1130</X><Y>240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2579,6 +2744,7 @@ for( Tuple tup : act ) {
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1642413485094" Target="1642413457596" Trigger="arrival">
+						<Action><![CDATA[isHome = true]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
@@ -2596,6 +2762,28 @@ for( Tuple tup : act ) {
 					</Properties>	
 				</StatechartElement>
 			</StatechartElements>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[Activity]]></ReturnType>
+					<Id>1642936861060</Id>
+					<Name><![CDATA[setNextActivity]]></Name>
+					<X>50</X><Y>400</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[int i = currentActivityEpisode;
+nextActivity = 	activities.get(i + 1);
+
+if (currentActivity.type.equals( ActivityType.Home ) ) {
+	while ( nextActivity.type.equals( ActivityType.Home) ) {
+		nextActivity = 	activities.get(i + 2);
+		i++;
+	}
+}]]></Body>
+				</Function>
+			</Functions>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1641809719134</Id>
@@ -2652,6 +2840,132 @@ for( Tuple tup : act ) {
 					</ActiveObjectClass>
 				</ContainerLink>
 			</ContainerLinks>
+			<EmbeddedObjects>
+				<EmbeddedObject>
+					<Id>1642933441110</Id>
+					<Name><![CDATA[activities]]></Name>
+					<X>50</X><Y>280</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<PresentationId>1642933441113</PresentationId>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[albatross_flexibility]]></PackageName>
+						<ClassName><![CDATA[Activity]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[albatross_flexibility]]></PackageName>
+							<ClassName><![CDATA[Activity]]></ClassName>
+							<ItemName><![CDATA[1641808826010]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[modality]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[type]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[leaveTime]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[travelTime]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[]]></Code>
+								<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[locStart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[locEnd]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[distance]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[leaveMoment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[adult]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[beginTime]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[endTime]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[arrivalMoment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[endMoment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[activityDuration]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[]]></Code>
+								<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[owner]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[household]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[episode]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[startMinute]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>true</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InEnvironment>true</InEnvironment>	
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>EMPTY</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+			</EmbeddedObjects>
 
 			<Presentation>
 				<Level>
@@ -2711,9 +3025,109 @@ for( Tuple tup : act ) {
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Text>
+					<Id>1642936295165</Id>
+					<Name><![CDATA[text1]]></Name>
+					<X>250</X><Y>20</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-1</Color>
+					<Text><![CDATA[Current activity: swimming (ep. 2 / 10)]]></Text>
+					<TextCode><![CDATA["Current activity: " +
+activities.get( currentActivityEpisode ).type.toString() +
+" (ep. " +
+currentActivityEpisode +
+" / " + 
+activities.size() +
+")"]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>20</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1642938108075</Id>
+					<Name><![CDATA[button]]></Name>
+					<X>225</X><Y>265</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="100" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[for (Activity a: activities) {
+	traceln( a.type );
+}]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[print activities]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1642938952469</Id>
+					<Name><![CDATA[text2]]></Name>
+					<X>670</X><Y>20</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-1</Color>
+					<Text><![CDATA[Current activity: swimming (ep. 2 / 10)]]></Text>
+					<TextCode><![CDATA["Next activity: " +
+nextActivity.type.toString() +
+" (ep. " +
+nextActivity.episode +
+" / " + 
+activities.size() +
+") in: " +
+roundToInt( nextActivity.startMinute - time() ) +
+" min" ]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>20</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
 			</Presentation>
 
 				</Level>
+				<EmbeddedObjectPresentation>
+					<Id>1642933441113</Id>
+					<Name><![CDATA[activities_presentation]]></Name>
+					<X>150</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<DrawingMode>AGENT_CURRENT_POSITION</DrawingMode>
+					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
+					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
+					<Latitude>0.0</Latitude>
+					<Longitude>0.0</Longitude>
+				</EmbeddedObjectPresentation>
 			</Presentation>
 
 		</ActiveObjectClass>
@@ -2900,7 +3314,7 @@ for( Tuple tup : act ) {
 			</PresentationProperties>
 			<ModelTimeProperties>
 				<StopOption><![CDATA[Never]]></StopOption>
-				<InitialDate><![CDATA[1641772800000]]></InitialDate>	
+				<InitialDate><![CDATA[1641783600000]]></InitialDate>	
 				<InitialTime><![CDATA[0.0]]></InitialTime>	
 				<FinalDate><![CDATA[1644451200000]]></FinalDate>	
 				<FinalTime><![CDATA[100.0]]></FinalTime>	

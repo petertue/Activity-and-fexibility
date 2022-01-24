@@ -4,7 +4,7 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171712" AlpVersion="8.7.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171527" AlpVersion="8.7.3">
 <Model>
 	<Id>1641807876061</Id>
 	<Name><![CDATA[Albatross flexibility]]></Name>
@@ -973,7 +973,7 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 				<Variable Class="Parameter">
 					<Id>1641813585481</Id>
 					<Name><![CDATA[id]]></Name>
-					<X>40</X><Y>220</Y>
+					<X>40</X><Y>250</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1207,7 +1207,7 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 					<X>200</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[Adult]]></Type>
@@ -1228,7 +1228,7 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 					<X>200</X><Y>160</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[Adult]]></Type>
@@ -1249,7 +1249,7 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 					<X>350</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[Car]]></Type>
@@ -1270,7 +1270,7 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 					<X>350</X><Y>160</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[Car]]></Type>
@@ -1288,7 +1288,7 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 				<Variable Class="Parameter">
 					<Id>1643031558206</Id>
 					<Name><![CDATA[composition]]></Name>
-					<X>-80</X><Y>130</Y>
+					<X>40</X><Y>220</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1528,6 +1528,28 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 
 			<Presentation>
 				<Rectangle>
+					<Id>1643054556631</Id>
+					<Name><![CDATA[rectangle2]]></Name>
+					<X>1110</X><Y>60</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>290</Width>
+					<Height>230</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-2578</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
+				<Rectangle>
 					<Id>1641808422230</Id>
 					<Name><![CDATA[rectangle]]></Name>
 					<X>0</X><Y>0</Y>
@@ -1571,10 +1593,32 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Rectangle>
+					<Id>1643054485780</Id>
+					<Name><![CDATA[rectangle1]]></Name>
+					<X>1120</X><Y>70</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>270</Width>
+					<Height>210</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-6943</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
 				<Group>
 					<Id>1642933711013</Id>
 					<Name><![CDATA[g_adult1]]></Name>
-					<X>450</X><Y>35</Y>
+					<X>1150</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1645,7 +1689,7 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 				<Group>
 					<Id>1642933739856</Id>
 					<Name><![CDATA[g_adult2]]></Name>
-					<X>480</X><Y>35</Y>
+					<X>1150</X><Y>140</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -1713,6 +1757,142 @@ else { traceln("er is geen huishouden 11");}]]></ActionCode>
 			</Presentation>
 
 				</Group>
+				<Text>
+					<Id>1643055939911</Id>
+					<Name><![CDATA[text1]]></Name>
+					<X>1170</X><Y>90</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Adult 1: home]]></Text>
+					<TextCode><![CDATA["Adult 1: " + adult1.currentActivity.type.toString()]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1643056063119</Id>
+					<Name><![CDATA[text2]]></Name>
+					<X>1170</X><Y>130</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Adult 1: home]]></Text>
+					<TextCode><![CDATA["Adult 2: " + adult2.currentActivity.type.toString()]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Group>
+					<Id>1643056097031</Id>
+					<Name><![CDATA[g_child1]]></Name>
+					<X>1150</X><Y>180</Y>
+					<Label><X>7.308</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Polyline>
+					<Id>1643056097033</Id>
+					<Name><![CDATA[polyline2]]></Name>
+					<X>0</X><Y>-7.5</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<FillColor>-1</FillColor>
+					<FillColorCode><![CDATA[adult2.isHome ? lightGreen : white]]></FillColorCode>
+					<FillMaterial>null</FillMaterial>
+					<Points>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>7.308</X><Y>15</Y><Z>0</Z></Point>
+					   <Point><X>-7.308</X><Y>15</Y><Z>0</Z></Point>
+					   <Point><X>-0.731</X><Y>1.5</Y><Z>0</Z></Point>
+					</Points>
+					<Closed>false</Closed>
+				</Polyline>
+				<Oval>
+					<Id>1643056097035</Id>
+					<Name><![CDATA[oval2]]></Name>
+					<X>0</X><Y>-7.5</Y>
+					<Label><X>0</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<RadiusX>5.625</RadiusX>
+					<RadiusY>40</RadiusY>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillColorCode><![CDATA[adult2.isHome ? lightGreen : white]]></FillColorCode>
+					<FillMaterial>null</FillMaterial>
+				</Oval>
+			</Presentation>
+
+				</Group>
+				<Text>
+					<Id>1643056116911</Id>
+					<Name><![CDATA[text3]]></Name>
+					<X>1170</X><Y>170</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Child 1: no info]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
 			</Presentation>
 
 				</Level>
@@ -2886,7 +3066,7 @@ endDay = Integer.valueOf(x[2]);]]></Body>
 				<Variable Class="CollectionVariable">
 					<Id>1643032981822</Id>
 					<Name><![CDATA[processedActivities]]></Name>
-					<X>50</X><Y>550</Y>
+					<X>50</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3105,7 +3285,7 @@ if (currentActivity.type.equals( ActivityType.Home ) ) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[processedActivities.add(activities.get(0));
+					<Body><![CDATA[processedActivities.add( activities.get(0) );
 
 for (int i=0; i < activities.size()-1; i++ ) {
 	currentActivity1 = activities.get(i);
@@ -3604,7 +3784,7 @@ traceln(processedActivities);
 					<Name><![CDATA[text1]]></Name>
 					<X>250</X><Y>20</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
+					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
@@ -3631,7 +3811,7 @@ activities.size() +
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1642938108075</Id>
 					<Name><![CDATA[button]]></Name>
-					<X>225</X><Y>265</Y>
+					<X>200</X><Y>270</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3655,7 +3835,7 @@ activities.size() +
 					<Name><![CDATA[text2]]></Name>
 					<X>670</X><Y>20</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
+					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
@@ -5729,13 +5909,13 @@ activities.get (currentActivityEpisode + 8 ).modality.toString()
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1643034188409</Id>
 					<Name><![CDATA[button2]]></Name>
-					<X>370</X><Y>260</Y>
+					<X>200</X><Y>540</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
+					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="110" Height="30">
+					<BasicProperties Width="160" Height="30">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor/>
 						<Enabled>true</Enabled>
@@ -6453,7 +6633,7 @@ processedActivities.get (currentActivityEpisode + 6 ).modality.toString()
 				<Text>
 					<Id>1643034766454</Id>
 					<Name><![CDATA[text102]]></Name>
-					<X>800</X><Y>1320</Y>
+					<X>795</X><Y>1320</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7899,6 +8079,42 @@ processedActivities.get (currentActivityEpisode + 2 ).endDay
 			<CurrentLevel>1643022592426</CurrentLevel>
 			<ConnectionsId>1643022592422</ConnectionsId>
 			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1643060307112</Id>
+					<Name><![CDATA[inUse]]></Name>
+					<X>170</X><Y>50</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1643060329508</Id>
+					<Name><![CDATA[batteryCapacity]]></Name>
+					<X>170</X><Y>80</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1643060342737</Id>
+					<Name><![CDATA[currentCapacity]]></Name>
+					<X>170</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1643031376829</Id>
 					<Name><![CDATA[carID]]></Name>
@@ -7923,7 +8139,7 @@ processedActivities.get (currentActivityEpisode + 2 ).endDay
 				<Variable Class="Parameter">
 					<Id>1643031385666</Id>
 					<Name><![CDATA[ev]]></Name>
-					<X>50</X><Y>100</Y>
+					<X>50</X><Y>80</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>

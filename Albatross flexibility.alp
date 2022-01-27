@@ -218,7 +218,7 @@
 				<Variable Class="Parameter">
 					<Id>1642680737997</Id>
 					<Name><![CDATA[nbOfHouseholds]]></Name>
-					<X>-140</X><Y>100</Y>
+					<X>190</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -1178,6 +1178,7 @@ education2 = tup.get( household_full.education2 );
 
 //Initialize rest of household
 nbAdults = composition < 2 ? 1 : 2;
+
 adult1 = add_adults();
 adult1.memberID = 0;
 if ( nbAdults > 1 ) {
@@ -2360,10 +2361,10 @@ String[] p = beginTime.split( ":|\\+" );
 String[] x = endTime.split( ":|\\+" );
 
 startMinute = Integer.valueOf(s[0]) * 60 +  Integer.valueOf(s[1]) +  Integer.valueOf(s[2]) * 24 * 60;
-leaveTimeString = s[0] + ":" + s[1];
-endTimeString =  x[0] + ":" + x[1];
 startDay = Integer.valueOf(s[2]);
-endDay = Integer.valueOf(x[2]);]]></Body>
+endDay = Integer.valueOf(x[2]);
+leaveTimeString = s[0] + ":" + s[1];
+endTimeString =  x[0] + ":" + x[1];]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -2677,7 +2678,7 @@ endDay = Integer.valueOf(x[2]);]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1642936196890</Id>
 					<Name><![CDATA[currentActivityEpisode]]></Name>
-					<X>50</X><Y>370</Y>
+					<X>60</X><Y>960</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2729,6 +2730,18 @@ endDay = Integer.valueOf(x[2]);]]></Body>
 					<Id>1643196315596</Id>
 					<Name><![CDATA[nextTimer]]></Name>
 					<X>50</X><Y>890</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1643284883335</Id>
+					<Name><![CDATA[dummy]]></Name>
+					<X>60</X><Y>990</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2932,7 +2945,7 @@ endDay = Integer.valueOf(x[2]);]]></Body>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
 						<EntryAction><![CDATA[if ( currentActivityEpisode > 0 ) {
-	nextActivityTimer.restart( nextActivity.startMinute, MINUTE);
+	nextActivityTimer.restart( nextActivity.startMinute - time(), MINUTE);
 }]]></EntryAction>
 						<ExitAction><![CDATA[startNextActivity();]]></ExitAction>
 						<FillColor/>
@@ -3107,7 +3120,7 @@ endDay = Integer.valueOf(x[2]);]]></Body>
 				<Event>
 					<Id>1643196308337</Id>
 					<Name><![CDATA[nextActivityTimer]]></Name>
-					<X>50</X><Y>830</Y>
+					<X>50</X><Y>820</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3138,7 +3151,7 @@ endDay = Integer.valueOf(x[2]);]]></Body>
 				<Event>
 					<Id>1643208489604</Id>
 					<Name><![CDATA[travelTimer]]></Name>
-					<X>50</X><Y>800</Y>
+					<X>50</X><Y>790</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3164,7 +3177,7 @@ endDay = Integer.valueOf(x[2]);]]></Body>
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[String message = currentActivity.type.equals(ActivityType.Home) ? "arrive at home" : "arrive at activity";
+					<Action><![CDATA[String message = currentActivity.type.equals(ActivityType.Home) ? "arrive home" : "arrive at activity";
 send( message, this);]]></Action>
 				</Event>
 			</Events>
@@ -3188,7 +3201,7 @@ for (int i=0; i < activities.size()-1; i++ ) {
 	if (currentActivity1.type.equals( ActivityType.Home ) ) {
 		while ( nextActivity1.type.equals( ActivityType.Home) ) {
 			currentActivity1.set_endTime(nextActivity1.endTime);
-			//currentActivity1.set_endMoment(nextActivity1.endMoment);
+			//currentActivity1.set_endMinutue(nextActivity1.endMinute);
 			currentActivity1.set_endTimeString(nextActivity1.endTimeString);
 			currentActivity1.set_endDay(nextActivity1.endDay);
 			traceln(currentActivity1.endTime);
@@ -3226,7 +3239,7 @@ traceln(processedActivities);
 					<ReturnType><![CDATA[Activity[]]]></ReturnType>
 					<Id>1643192033724</Id>
 					<Name><![CDATA[generateTrips]]></Name>
-					<X>50</X><Y>770</Y>
+					<X>50</X><Y>550</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3249,7 +3262,7 @@ for( Tuple tup : activities ) {
 	a.processAlbatrossInput();
 	a.adult = this;
 	a.household = household;
-	//a.distance = tup.get (trips.activity_type ); ToDo
+	//a.distance = tup.get (trips.activity_type ); ToDo 
 }
 
 currentActivity = this.activities(0);
@@ -3277,18 +3290,19 @@ nextActivityTimer.restart( nextActivity.startMinute, MINUTE );]]></Body>
 currentActivityEpisode = currentActivity.episode;
 
 //set next activity
-int i = currentActivityEpisode;
-nextActivity = 	activities.get(i + 1);
+dummy = currentActivityEpisode;
+traceln("dummy= " + dummy);
+traceln("current ep" + currentActivityEpisode);
+nextActivity = 	activities.get(dummy + 1);
+
 
 //skip double home activities
 if (currentActivity.type.equals( ActivityType.Home ) ) {
 	while ( nextActivity.type.equals( ActivityType.Home) ) {
-		nextActivity = 	activities.get(i + 2);
-		i++;
+		nextActivity = 	activities.get(dummy + 2);
+		dummy++;
 	}
-}
-
-send("vertrek", this);]]></Body>
+}]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -8268,7 +8282,7 @@ processedActivities.get (currentActivityEpisode + 2 ).endDay
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[int]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[10]]></Code>
+							<Code><![CDATA[1]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>

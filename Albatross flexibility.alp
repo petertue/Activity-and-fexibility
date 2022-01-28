@@ -4,7 +4,7 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171527" AlpVersion="8.7.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171712" AlpVersion="8.7.3">
 <Model>
 	<Id>1641807876061</Id>
 	<Name><![CDATA[Albatross flexibility]]></Name>
@@ -2945,8 +2945,10 @@ endTimeString =  x[0] + ":" + x[1];]]></Body>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
 						<EntryAction><![CDATA[if ( currentActivityEpisode > 0 ) {
-	nextActivityTimer.restart( nextActivity.startMinute - time(), MINUTE);
-}]]></EntryAction>
+	if( currentActivityEpisode + 1 < activities.size())
+			nextActivityTimer.restart( nextActivity.startMinute - time(), MINUTE);
+}
+]]></EntryAction>
 						<ExitAction><![CDATA[startNextActivity();]]></ExitAction>
 						<FillColor/>
 					</Properties>
@@ -3192,7 +3194,9 @@ send( message, this);]]></Action>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[processedActivities.add( activities.get(0) );
+					<Body><![CDATA[
+//newActivity a = add_newActivities(activities.get(0));
+processedActivities.add( activities.get(0) );
 
 for (int i=0; i < activities.size()-1; i++ ) {
 	currentActivity1 = activities.get(i);
@@ -3219,6 +3223,7 @@ for (int i=0; i < activities.size()-1; i++ ) {
 		}
 		//Probably errors if it ends with two home moments, needs to be fixed
 	}
+	
 	processedActivities.add(nextActivity1);
 }
 
@@ -3274,7 +3279,9 @@ while ( nextActivity.type.equals( ActivityType.Home) ) {
 }
 
 // Set the timer for the first activity
-nextActivityTimer.restart( nextActivity.startMinute, MINUTE );]]></Body>
+nextActivityTimer.restart( nextActivity.startMinute, MINUTE );
+
+traceln(activities.size());]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -3289,20 +3296,30 @@ nextActivityTimer.restart( nextActivity.startMinute, MINUTE );]]></Body>
 					<Body><![CDATA[currentActivity = nextActivity;
 currentActivityEpisode = currentActivity.episode;
 
+
 //set next activity
 dummy = currentActivityEpisode;
 traceln("dummy= " + dummy);
 traceln("current ep" + currentActivityEpisode);
-nextActivity = 	activities.get(dummy + 1);
+
+if(currentActivityEpisode + 2 <= activities.size()){
+
+	nextActivity = 	activities.get(dummy + 1);
 
 
-//skip double home activities
-if (currentActivity.type.equals( ActivityType.Home ) ) {
-	while ( nextActivity.type.equals( ActivityType.Home) ) {
-		nextActivity = 	activities.get(dummy + 2);
-		dummy++;
+	//skip double home activities
+	if (currentActivity.type.equals( ActivityType.Home ) ) {
+		while ( nextActivity.type.equals( ActivityType.Home) ) {
+			nextActivity = 	activities.get(dummy + 2);
+			dummy++;
+		}
 	}
-}]]></Body>
+}
+
+
+
+//traceln("current activity = " + currentActivity);
+//traceln("next activity = " + nextActivity);]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -3371,6 +3388,132 @@ if (currentActivity.type.equals( ActivityType.Home ) ) {
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<PresentationId>1642933441113</PresentationId>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[albatross_flexibility]]></PackageName>
+						<ClassName><![CDATA[Activity]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[albatross_flexibility]]></PackageName>
+							<ClassName><![CDATA[Activity]]></ClassName>
+							<ItemName><![CDATA[1641808826010]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[modality]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[type]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[leaveTime]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[travelTime]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[locStart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[locEnd]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[distance]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[adult]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[beginTime]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[endTime]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[activityDuration]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[]]></Code>
+								<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[owner]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[household]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[episode]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[startMinute]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[leaveTimeString]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[endTimeString]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[startDay]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[endDay]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[endMinute]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>true</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InEnvironment>true</InEnvironment>	
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>EMPTY</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1643291762039</Id>
+					<Name><![CDATA[newActivities]]></Name>
+					<X>1440</X><Y>1120</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<PresentationId>1643291762043</PresentationId>
 					<ActiveObjectClass>
 						<PackageName><![CDATA[albatross_flexibility]]></PackageName>
 						<ClassName><![CDATA[Activity]]></ClassName>
@@ -7881,6 +8024,25 @@ processedActivities.get (currentActivityEpisode + 2 ).endDay
 					<Id>1642933441113</Id>
 					<Name><![CDATA[activities_presentation]]></Name>
 					<X>150</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<DrawingMode>AGENT_CURRENT_POSITION</DrawingMode>
+					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
+					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
+					<Latitude>0.0</Latitude>
+					<Longitude>0.0</Longitude>
+				</EmbeddedObjectPresentation>
+				<EmbeddedObjectPresentation>
+					<Id>1643291762043</Id>
+					<Name><![CDATA[newActivities_presentation]]></Name>
+					<X>1540</X><Y>1120</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>

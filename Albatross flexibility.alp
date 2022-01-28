@@ -4,7 +4,7 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171712" AlpVersion="8.7.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.9.202112171527" AlpVersion="8.7.3">
 <Model>
 	<Id>1641807876061</Id>
 	<Name><![CDATA[Albatross flexibility]]></Name>
@@ -410,63 +410,11 @@
 					<InitializationType>EMPTY</InitializationType>
 					<InitializationDatabaseTableQuery>
 						<TableReference>
-							<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-							<ClassName><![CDATA[household]]></ClassName>
 						</TableReference>
 					</InitializationDatabaseTableQuery>
 					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
 					<QuantityColumn>
 					</QuantityColumn>
-					<ParameterToDatabaseColumnMapping>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Household]]></ClassName>
-								<ItemName><![CDATA[postalCode]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[household]]></ClassName>
-								<ItemName><![CDATA[home]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Household]]></ClassName>
-								<ItemName><![CDATA[id]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[household]]></ClassName>
-								<ItemName><![CDATA[hhid]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Household]]></ClassName>
-								<ItemName><![CDATA[nbAdults]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[household]]></ClassName>
-								<ItemName><![CDATA[nadult]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[Household]]></ClassName>
-								<ItemName><![CDATA[nbVehicles]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-								<ClassName><![CDATA[household]]></ClassName>
-								<ItemName><![CDATA[ncar]]></ItemName>
-							</Value>
-						</Item>	
-					</ParameterToDatabaseColumnMapping>
 				</EmbeddedObject>
 			</EmbeddedObjects>
 
@@ -8371,15 +8319,6 @@ processedActivities.get (currentActivityEpisode + 2 ).endDay
 				<Login><![CDATA[]]></Login>
 				<Password><![CDATA[]]></Password>
 			</ExternalConnection>
-			<TableImportSettings>
-				<TableReference>
-					<PackageName><![CDATA[albatross_flexibility]]></PackageName>
-					<ClassName><![CDATA[household]]></ClassName>
-				</TableReference>
-				<ConnectionIndex>0</ConnectionIndex>
-				<ExternalTableName><![CDATA["household"]]></ExternalTableName>
-				<AutoImport>false</AutoImport>
-			</TableImportSettings>
 			<TableImportSettings>
 				<TableReference>
 					<PackageName><![CDATA[albatross_flexibility]]></PackageName>
